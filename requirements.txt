@@ -1,0 +1,9 @@
+SQLAlchemy
+psycopg2-binary
+pandas
+numpy
+matplotlib
+seaborn
+phik
+python-dotenv
+scipy
