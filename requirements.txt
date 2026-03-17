@@ -7,3 +7,4 @@ seaborn
 phik
 python-dotenv
 scipy
+temp*
