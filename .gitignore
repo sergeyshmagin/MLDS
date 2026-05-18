@@ -3,6 +3,9 @@ fix_*.py
 preview_*.py
 preview_*.png
 
+# Notebook (хранится на платформе, не в репо)
+*.ipynb
+
 # Данные (большой CSV, не для репо)
 *.csv
 
