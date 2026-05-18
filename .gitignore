@@ -1,0 +1,19 @@
+# Вспомогательные скрипты патчинга
+fix_*.py
+preview_*.py
+preview_*.png
+
+# Данные (большой CSV, не для репо)
+*.csv
+
+# Кэш Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
