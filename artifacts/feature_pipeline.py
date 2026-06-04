@@ -34,13 +34,6 @@ class ManualStandardScaler(BaseEstimator, TransformerMixin):
         X_arr = np.asarray(X, dtype=float)
         return (X_arr - self.mean_) / self.scale_
 
-    def get_feature_names_out(self, input_features=None):
-        if input_features is not None:
-            return np.asarray(input_features, dtype=object)
-        if hasattr(self, "feature_names_in_"):
-            return self.feature_names_in_
-        return np.asarray([f"x{i}" for i in range(self.n_features_in_)], dtype=object)
-
 
 def build_features(visits, ads, surf, cloud, primary=None):
     """По сырым датафреймам возвращает признаки пользователей, индекс — user_id.
