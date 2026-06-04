@@ -1,0 +1,42 @@
+{
+  "model": "SVC rbf",
+  "best_params": {
+    "clf__C": 1.0,
+    "clf__gamma": 0.05
+  },
+  "f1_macro_cv": 0.8874,
+  "f1_macro_test": 0.8961,
+  "numeric_features": [
+    "sessions_per_day",
+    "daytime_утро",
+    "daytime_день",
+    "daytime_вечер",
+    "cat_Category 01",
+    "cat_Category 02",
+    "cat_Category 03",
+    "cat_Category 04",
+    "cat_Category 05",
+    "cat_Category 06",
+    "cat_Category 07",
+    "cat_Category 08",
+    "cat_Category 09",
+    "cat_Category 10",
+    "cat_Category 11",
+    "cat_Category 12",
+    "cat_Category 13",
+    "cat_Category 14",
+    "cat_Category 15",
+    "cat_Category 16",
+    "cat_Category 17",
+    "cat_Category 18",
+    "cat_Category 19"
+  ],
+  "categorical_features": [
+    "ads_activity",
+    "surf_depth",
+    "cloud_usage",
+    "peak_daytime"
+  ],
+  "random_state": 42,
+  "test_size": 0.25
+}

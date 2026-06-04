@@ -1,0 +1,36 @@
+# MLDS Sprint 13 — Возрастная классификация пользователей
+
+Артефакты модели для проекта Sprint 13: классификация пользователей сети «Йети» на 5 возрастных категорий.
+
+## Содержимое ветки
+
+| Файл | Что это |
+|---|---|
+| `43cb4ff3-e668-4a18-aa22-aa1bc6312eb1.ipynb` | Основная тетрадь проекта со всеми этапами (EDA → подбор гиперпараметров → артефакты) |
+| `artifacts/feature_pipeline.py` | Модуль с функцией сборки признаков `build_features` и `ManualStandardScaler`. Импортируется при загрузке модели. |
+| `artifacts/model.joblib` | Сериализованный обученный пайплайн `ColumnTransformer + SVC(kernel="rbf", probability=True)`. |
+| `artifacts/model_meta.json` | Метаданные: лучшие гиперпараметры, F1 на CV и тесте, список колонок, `RANDOM_STATE`. |
+| `requirements.txt` | Зафиксированные нижние границы версий зависимостей. |
+
+## Метрики (SVC rbf, `C=1.0`, `gamma=0.05`, `probability=True`)
+
+- F1_macro CV: **0.887 ± 0.012**
+- F1_macro test: **0.896**
+- Δ(test − cv): +0.009 (без переобучения)
+- precision_test: 0.891, recall_test: 0.902
+- Доля «<18 → 18+»: 8.5%
+
+## Как запустить инференс
+
+```python
+import sys, joblib
+sys.path.insert(0, "artifacts")          # чтобы найти feature_pipeline
+from feature_pipeline import build_features
+
+model = joblib.load("artifacts/model.joblib")
+X = build_features(visits, ads, surf, cloud)   # сырые датафреймы — те же, что в тетради
+y = model.predict(X)
+probs = model.predict_proba(X)                 # доступно благодаря probability=True
+```
+
+Для защиты несовершеннолетних: выставляйте порог по `probs[:, 0]` — показывайте 18+ креативы только если `P(<18) < 0.3`.
