@@ -4,8 +4,8 @@
     "clf__C": 1.0,
     "clf__gamma": 0.05
   },
-  "f1_macro_cv": 0.8874,
-  "f1_macro_test": 0.8961,
+  "f1_macro_cv": 0.8906,
+  "f1_macro_test": 0.8921,
   "numeric_features": [
     "sessions_per_day",
     "daytime_утро",
@@ -35,6 +35,7 @@
     "ads_activity",
     "surf_depth",
     "cloud_usage",
+    "primary_device",
     "peak_daytime"
   ],
   "random_state": 42,

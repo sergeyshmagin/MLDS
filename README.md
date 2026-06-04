@@ -14,11 +14,11 @@
 
 ## Метрики (SVC rbf, `C=1.0`, `gamma=0.05`, `probability=True`)
 
-- F1_macro CV: **0.887 ± 0.012**
-- F1_macro test: **0.896**
-- Δ(test − cv): +0.009 (без переобучения)
-- precision_test: 0.891, recall_test: 0.902
-- Доля «<18 → 18+»: 8.5%
+- F1_macro CV: **0.891 ± 0.011**
+- F1_macro test: **0.892**
+- Δ(test − cv): +0.002 (без переобучения)
+- precision_test: 0.888, recall_test: 0.898
+- Доля «<18 → 18+»: 8.9%
 
 ## Как запустить инференс
 
@@ -28,9 +28,9 @@ sys.path.insert(0, "artifacts")          # чтобы найти feature_pipelin
 from feature_pipeline import build_features
 
 model = joblib.load("artifacts/model.joblib")
-X = build_features(visits, ads, surf, cloud)   # сырые датафреймы — те же, что в тетради
+X = build_features(visits, ads, surf, cloud, primary)   # 5 сырых датафреймов
 y = model.predict(X)
-probs = model.predict_proba(X)                 # доступно благодаря probability=True
+probs = model.predict_proba(X)                          # доступно благодаря probability=True
 ```
 
 Для защиты несовершеннолетних: выставляйте порог по `probs[:, 0]` — показывайте 18+ креативы только если `P(<18) < 0.3`.

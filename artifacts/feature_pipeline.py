@@ -42,11 +42,12 @@ class ManualStandardScaler(BaseEstimator, TransformerMixin):
         return np.asarray([f"x{i}" for i in range(self.n_features_in_)], dtype=object)
 
 
-def build_features(visits, ads, surf, cloud):
+def build_features(visits, ads, surf, cloud, primary=None):
     """По сырым датафреймам возвращает признаки пользователей, индекс — user_id.
 
     Возвращает n_events, sessions_per_day, 3 доли времени суток, 19 долей категорий
-    плюс 4 категориальных колонки (ads/surf/cloud/peak_daytime).
+    и 5 категориальных колонок (ads/surf/cloud/peak_daytime/primary_device).
+    Если primary не передан — primary_device заполняется "unknown".
     """
     v = visits.copy()
     v["date"] = pd.to_datetime(v["date"])
@@ -82,8 +83,9 @@ def build_features(visits, ads, surf, cloud):
         s = df.drop_duplicates(subset=key).set_index(key)[value]
         return features.index.to_series().map(s).astype(object).fillna("unknown")
 
-    features["ads_activity"] = _lookup(ads,   "user_id", "ads_activity")
-    features["surf_depth"]   = _lookup(surf,  "user_id", "surf_depth")
-    features["cloud_usage"]  = _lookup(cloud, "user_id", "cloud_usage").astype(str)
-    features["peak_daytime"] = features.index.to_series().map(peak_daytime)
+    features["ads_activity"]   = _lookup(ads,     "user_id", "ads_activity")
+    features["surf_depth"]     = _lookup(surf,    "user_id", "surf_depth")
+    features["cloud_usage"]    = _lookup(cloud,   "user_id", "cloud_usage").astype(str)
+    features["primary_device"] = _lookup(primary, "user_id", "primary_device")
+    features["peak_daytime"]   = features.index.to_series().map(peak_daytime)
     return features
