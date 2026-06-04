@@ -7,7 +7,8 @@
 | Файл | Что это |
 |---|---|
 | `43cb4ff3-e668-4a18-aa22-aa1bc6312eb1.ipynb` | Основная тетрадь проекта со всеми этапами (EDA → подбор гиперпараметров → артефакты) |
-| `artifacts/feature_pipeline.py` | Модуль с функцией сборки признаков `build_features` и `ManualStandardScaler`. Импортируется при загрузке модели. |
+| `feature_pipeline.py` | **Источник истины** для `build_features` и `ManualStandardScaler` — отдельный Python-файл, как требует ТЗ. Импортируется из тетради и из загруженной модели. |
+| `artifacts/feature_pipeline.py` | Копия модуля, упакованная вместе с моделью для deployment-бандла. |
 | `artifacts/model.joblib` | Сериализованный обученный пайплайн `ColumnTransformer + SVC(kernel="rbf", probability=True)`. |
 | `artifacts/model_meta.json` | Метаданные: лучшие гиперпараметры, F1 на CV и тесте, список колонок, `RANDOM_STATE`. |
 | `requirements.txt` | Версии библиотек, **зафиксированные под среду JupyterHub Практикума** (Python 3.9 + sklearn 0.24). |
