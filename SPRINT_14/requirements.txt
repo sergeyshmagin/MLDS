@@ -1,0 +1,11 @@
+# Окружение JupyterHub Практикума (Python 3.9). Точные == версии.
+numpy==1.19.5
+pandas==1.2.5
+scikit-learn==0.24.2
+matplotlib==3.4.3
+seaborn==0.11.2
+statsmodels==0.12.2
+joblib==1.0.1
+# optuna на сервере не предустановлена; 2.10.1 совместима с numpy 1.19.5
+# (не тянет апгрейд numpy, который сломал бы scikit-learn 0.24.2).
+optuna==2.10.1

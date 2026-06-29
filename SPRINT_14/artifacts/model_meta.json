@@ -1,0 +1,38 @@
+{
+  "model": "KNeighborsRegressor",
+  "best_params": {
+    "n_neighbors": 11,
+    "weights": "distance",
+    "p": 1
+  },
+  "cv_rmse": 303.91,
+  "test_metrics": {
+    "RMSE": 296.16,
+    "MAE": 200.68,
+    "R2": 0.785654
+  },
+  "baseline_test_metrics": {
+    "RMSE": 411.33,
+    "MAE": 312.65,
+    "R2": 0.586549
+  },
+  "random_state": 42,
+  "input_columns": [
+    "temperature",
+    "humidity",
+    "wind_speed_ms",
+    "visibility_10m",
+    "dew_point_temperature",
+    "solar_radiation_mjm2",
+    "rainfallmm",
+    "snowfall_cm",
+    "seasons",
+    "holiday",
+    "functioning_day",
+    "time_period_evening",
+    "time_period_late_evening",
+    "time_period_morning",
+    "time_period_night"
+  ],
+  "sklearn_version": "0.24.2"
+}
