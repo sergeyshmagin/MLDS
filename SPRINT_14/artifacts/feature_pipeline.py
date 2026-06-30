@@ -5,9 +5,10 @@ column groups used by the notebook. The notebook imports from here so that the
 custom classes keep a canonical ``__module__`` ("feature_pipeline") and the saved
 joblib pipeline can be loaded back without monkey-patching ``__class__``.
 
-Targets the JupyterHub Praktikum stack: Python 3.9, scikit-learn 0.24.2,
-numpy 1.19.5, pandas 1.2.5 (hence ``OneHotEncoder(sparse=False)`` and manual
-feature-name building instead of ``get_feature_names_out``, which appeared in 1.0).
+Targets the modern stack used to load the provided baseline: scikit-learn 1.6.1,
+numpy 1.26.4, pandas 2.3.3 (hence ``OneHotEncoder(sparse_output=False)``). Feature
+names are still built by hand from ``categories_`` to keep the order explicit and
+independent of the sklearn version.
 """
 from __future__ import annotations
 
@@ -150,7 +151,7 @@ def build_preprocessor():
     categorical = Pipeline(
         [
             ("imputer", SimpleImputer(strategy="most_frequent")),
-            ("onehot", OneHotEncoder(handle_unknown="ignore", sparse=False)),
+            ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False)),
         ]
     )
     return ColumnTransformer(

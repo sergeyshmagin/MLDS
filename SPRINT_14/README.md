@@ -8,7 +8,7 @@
 
 | Модель | RMSE | MAE | R2 | Отрицательные прогнозы |
 |--------|------|-----|-----|------------------------|
-| Линейная регрессия (baseline) | 411.33 | 312.65 | 0.587 | 150 |
+| Линейная регрессия (baseline) | 411.45 | 312.53 | 0.586 | 147 |
 | **KNN (финальная)** | **296.16** | **200.68** | **0.786** | **0** |
 
 RMSE -28%, MAE -36%, R2 +0.20 относительно baseline.
@@ -19,16 +19,16 @@ RMSE -28%, MAE -36%, R2 +0.20 относительно baseline.
 SPRINT_14/
 ├── requirements.txt            точные == версии Практикума (Python 3.9)
 └── artifacts/
-    ├── model.joblib            финальный KNN-пайплайн (сохранён под sklearn 0.24.2)
+    ├── model.joblib            финальный KNN-пайплайн (сохранён под sklearn 1.6.1)
     ├── feature_pipeline.py     модуль признаков (нужен для joblib.load)
     └── model_meta.json         best_params, метрики, список колонок, random_state
 ```
 
 ## Окружение
 
-Стек JupyterHub Практикума: **Python 3.9, scikit-learn 0.24.2, numpy 1.19.5,
-pandas 1.2.5** (см. `requirements.txt`). Под этими версиями `model.joblib` и
-сериализован.
+Современный стек: **scikit-learn 1.6.1, numpy 1.26.4, pandas 2.3.3** (см.
+`requirements.txt`). Под ним сериализован `model.joblib` и на нём же тетрадь
+загружает предоставленный baseline.
 
 ## Инференс
 

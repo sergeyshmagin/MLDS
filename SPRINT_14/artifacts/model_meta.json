@@ -1,22 +1,17 @@
 {
-  "model": "KNeighborsRegressor",
+  "model": "KNeighborsRegressor in sklearn Pipeline (WeatherFeatureEngineer + preprocessor)",
   "best_params": {
     "n_neighbors": 11,
     "weights": "distance",
     "p": 1
   },
-  "cv_rmse": 303.91,
+  "random_state": 42,
   "test_metrics": {
     "RMSE": 296.16,
     "MAE": 200.68,
-    "R2": 0.785654
+    "R2": 0.785654,
+    "neg_predictions": 0
   },
-  "baseline_test_metrics": {
-    "RMSE": 411.33,
-    "MAE": 312.65,
-    "R2": 0.586549
-  },
-  "random_state": 42,
   "input_columns": [
     "temperature",
     "humidity",
@@ -34,5 +29,12 @@
     "time_period_morning",
     "time_period_night"
   ],
-  "sklearn_version": "0.24.2"
+  "target": "rented_bike_count",
+  "stack": {
+    "python": "3.11/3.9 compatible",
+    "scikit-learn": "1.6.1",
+    "numpy": "1.26.4",
+    "optuna": "4.8.0"
+  },
+  "note": "Serialized on the modern stack (sklearn 1.6.1 / numpy 1.26.4), matching the notebook that loads the provided baseline."
 }
