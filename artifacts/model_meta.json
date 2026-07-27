@@ -1,6 +1,6 @@
 {
   "задача": "поведенческий скоринг: вероятность просрочки от 90 дней в горизонте 12 месяцев",
-  "модель": "CalibratedClassifierCV(isotonic) поверх Pipeline(OneHotEncoder+StandardScaler, RandomOverSampler, RandomForestClassifier)",
+  "модель": "CalibratedClassifierCV(isotonic) поверх Pipeline(OneHotEncoder+StandardScaler,RandomOverSampler, RandomForestClassifier)",
   "гиперпараметры": {
     "n_estimators": 250,
     "max_depth": 28,
