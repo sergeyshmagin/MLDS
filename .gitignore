@@ -1,0 +1,6 @@
+ds_s16_*.csv
+*.pdf
+catboost_info/
+.ipynb_checkpoints/
+__pycache__/
+.venv/
