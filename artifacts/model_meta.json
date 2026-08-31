@@ -1,0 +1,69 @@
+{
+  "проект": "AutoValue AI: предсказание стоимости автомобиля",
+  "модель": "CatBoostRegressor",
+  "функция_потерь": "MAE",
+  "гиперпараметры": {
+    "learning_rate": 0.03819,
+    "iterations": 1587,
+    "depth": 3,
+    "l2_leaf_reg": 9.79647,
+    "random_seed": 42
+  },
+  "осторожный_режим": {
+    "файл": "car_price_model_quantile.cbm",
+    "loss_function": "Quantile:alpha=0.4",
+    "назначение": "снижение риска переплаты ценой упущенной выгоды"
+  },
+  "признаки_числовые": [
+    "make_year",
+    "mileage_kmpl",
+    "engine_cc",
+    "owner_count",
+    "accidents_reported"
+  ],
+  "признаки_категориальные": [
+    "brand",
+    "fuel_type",
+    "transmission",
+    "color",
+    "service_history",
+    "insurance_valid",
+    "region"
+  ],
+  "метрики_валидация": {
+    "MAE": 79213.662552,
+    "RMSE": 98795.603825,
+    "R2": 0.855881,
+    "Overpricing Rate": 0.133125,
+    "Underpricing Rate": 0.06375,
+    "Underpricing Loss": 16693870.556436
+  },
+  "метрики_тест": {
+    "MAE": 75695.601432,
+    "RMSE": 94817.178643,
+    "R2": 0.874784,
+    "Overpricing Rate": 0.1345,
+    "Underpricing Rate": 0.058,
+    "Underpricing Loss": 19388018.001862
+  },
+  "метрики_тест_осторожная": {
+    "MAE": 77420.716503,
+    "RMSE": 97032.9515,
+    "R2": 0.868864,
+    "Overpricing Rate": 0.103,
+    "Underpricing Rate": 0.103,
+    "Underpricing Loss": 33892008.439896
+  },
+  "порог_ручной_проверки": 500000,
+  "размер_выборок": {
+    "обучение": 6400,
+    "валидация": 1600,
+    "тест": 2000
+  },
+  "версии": {
+    "python": "3.9.25",
+    "catboost": "1.2.5",
+    "numpy": "1.21.1",
+    "pandas": "1.2.4"
+  }
+}
