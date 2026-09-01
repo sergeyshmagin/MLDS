@@ -3,10 +3,10 @@
   "модель": "CatBoostRegressor",
   "функция_потерь": "MAE",
   "гиперпараметры": {
-    "learning_rate": 0.03819,
+    "learning_rate": 0.03818705898952077,
     "iterations": 1587,
     "depth": 3,
-    "l2_leaf_reg": 9.79647,
+    "l2_leaf_reg": 9.796467344356357,
     "random_seed": 42
   },
   "осторожный_режим": {
@@ -34,7 +34,9 @@
     "MAE": 79213.662552,
     "RMSE": 98795.603825,
     "R2": 0.855881,
+    "MAPE, %": 15.107549,
     "Overpricing Rate": 0.133125,
+    "Overpricing Loss": 31786406.196901,
     "Underpricing Rate": 0.06375,
     "Underpricing Loss": 16693870.556436
   },
@@ -42,7 +44,9 @@
     "MAE": 75695.601432,
     "RMSE": 94817.178643,
     "R2": 0.874784,
+    "MAPE, %": 14.282309,
     "Overpricing Rate": 0.1345,
+    "Overpricing Loss": 37821975.785029,
     "Underpricing Rate": 0.058,
     "Underpricing Loss": 19388018.001862
   },
@@ -50,7 +54,9 @@
     "MAE": 77420.716503,
     "RMSE": 97032.9515,
     "R2": 0.868864,
+    "MAPE, %": 13.893017,
     "Overpricing Rate": 0.103,
+    "Overpricing Loss": 26774833.600666,
     "Underpricing Rate": 0.103,
     "Underpricing Loss": 33892008.439896
   },
