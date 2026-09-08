@@ -1,0 +1,20 @@
+# Стек JupyterHub Практикума (Python 3.9) - версии зафиксированы точно,
+# доустанавливаемые библиотеки подобраны так, чтобы не тянуть его обновление.
+numpy==1.21.1
+pandas==1.2.4
+scikit-learn==0.24.1
+scipy==1.7.1
+matplotlib==3.3.4
+seaborn==0.11.1
+joblib==1.0.1
+
+# Доступ к PostgreSQL. pandas 1.2 несовместим с SQLAlchemy 2.x.
+SQLAlchemy==1.4.54
+psycopg2-binary==2.9.9
+
+# Моделирование и интерпретация.
+optuna==4.9.0
+lightgbm==3.3.5
+catboost==1.2.5
+shap==0.44.1
+numba==0.56.4

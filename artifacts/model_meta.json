@@ -1,0 +1,49 @@
+{
+  "model": "CatBoost",
+  "best_params": {
+    "iterations": 600,
+    "learning_rate": 0.01518747922672247,
+    "depth": 5,
+    "l2_leaf_reg": 4.297256589643226
+  },
+  "threshold": 0.38,
+  "random_state": 42,
+  "ir_cv": 22758000.0,
+  "ir_calibration": 66352500.0,
+  "ir_test": 65468000.0,
+  "ir_rel_test_%": 38.93393755036381,
+  "roc_auc_test": 0.8104102854030247,
+  "numeric_cols": [
+    "days_until_checkin",
+    "total_nights",
+    "weekend_share",
+    "guests_total",
+    "child_count",
+    "price_per_night",
+    "previous_cancellations",
+    "previous_no_shows",
+    "customer_special_requests",
+    "returning_customer",
+    "parking_included",
+    "checkin_month",
+    "checkin_dayofweek",
+    "booking_month",
+    "booking_year",
+    "stay_rating",
+    "review_lag_days"
+  ],
+  "categorical_cols": [
+    "sales_channel",
+    "meal_plan",
+    "room_type",
+    "season_group",
+    "lead_time_group"
+  ],
+  "text_col": "review_text",
+  "economics": {
+    "AvgRev": 64500,
+    "CostFP": 7000,
+    "LostRev": 64500,
+    "PerRebooking": 45000
+  }
+}
