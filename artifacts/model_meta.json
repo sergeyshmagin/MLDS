@@ -6,14 +6,14 @@
     "depth": 4,
     "l2_leaf_reg": 7.548548525255816
   },
-  "threshold": 0.34,
+  "threshold": 0.3272,
   "threshold_max_ir_unconstrained": 0.37,
   "with_demand_features": false,
   "random_state": 42,
   "ir_cv": 22584833.333333332,
-  "ir_calibration": 61016500.0,
-  "ir_test": 62663500.0,
-  "ir_rel_test_%": 37.266096347638886,
+  "ir_calibration": 60490000.0,
+  "ir_test": 61203000.0,
+  "ir_rel_test_%": 36.39753436633036,
   "roc_auc_test": 0.8164368443675143,
   "numeric_cols": [
     "days_until_checkin",
