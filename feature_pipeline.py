@@ -14,6 +14,10 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
+# Маркер спринта: в прошлых спринтах модуль назывался так же, и тетрадь может
+# случайно импортировать чужой файл из домашней папки. Тетрадь проверяет это значение.
+SPRINT = "SPRINT_18"
+
 RANDOM_STATE = 42
 
 # Экономические параметры из ТЗ, рубли.
