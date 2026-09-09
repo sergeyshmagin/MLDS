@@ -53,7 +53,6 @@ pip install -r requirements.txt
 
 ```python
 import joblib
-import pandas as pd
 import feature_pipeline as fp
 
 artifact = joblib.load("artifacts/model.joblib")
@@ -62,13 +61,15 @@ threshold = artifact["threshold"]          # рабочий порог 0.395, н
 with_demand = artifact["with_demand"]      # включены ли признаки спроса
 
 bookings = fp.clean_bookings(new_bookings_raw)   # сырая выгрузка hotel_bookings
-reviews = fp.clean_reviews(reviews_raw)          # сырая выгрузка hotel_reviews
-merged = fp.add_demand_features(fp.join_reviews(bookings, reviews))
-features = fp.build_features(merged, with_demand=with_demand)
+features = fp.build_features(fp.add_demand_features(bookings), with_demand=with_demand)
 
 probability = model.predict_proba(features)[:, 1]
 risky = probability >= threshold                 # брони, по которым стоит принимать меры
 ```
+
+**Таблица отзывов для инференса не нужна.** Признаки из неё в модель не входят, поэтому
+`join_reviews` вызывать не требуется - модели достаточно выгрузки `hotel_bookings`.
+В тетради объединение остаётся как исследовательский этап.
 
 ## Порог
 
