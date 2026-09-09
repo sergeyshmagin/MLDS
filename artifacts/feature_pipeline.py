@@ -45,10 +45,18 @@ BASE_NUMERIC_COLS = [
     "checkin_month",
     "checkin_dayofweek",
     "booking_month",
-    "booking_year",
-    "stay_rating",
-    "review_lag_days",
 ]
+
+# booking_year в признаки не входит: разбиение хронологическое, поэтому на калибровочной
+# и тестовой выборках встречаются годы, которых не было в обучении, и модель вынуждена
+# экстраполировать. Год оформления - свойство периода выгрузки, а не самой брони.
+EXCLUDED_COLS = ["booking_year"]
+
+# Признаки из отзывов (stay_rating, review_lag_days и TF-IDF по review_text) в модель
+# не входят. После объединения по дате они относятся к постороннему гостю, а не к клиенту
+# текущей брони: связь по клиенту невозможна без customer_id, известного в момент
+# оформления. Объединение и векторизация остаются в тетради как исследовательский этап.
+REVIEW_COLS = ["stay_rating", "review_lag_days", "review_text"]
 
 # Признаки спроса: сколько броней на ту же дату заезда уже было оформлено к моменту
 # текущей брони и насколько активно бронировали в предыдущие 30 дней. Обе величины
@@ -76,7 +84,7 @@ def numeric_cols(with_demand=False):
 
 
 def feature_cols(with_demand=False):
-    return numeric_cols(with_demand) + CATEGORICAL_COLS + [TEXT_COL]
+    return numeric_cols(with_demand) + CATEGORICAL_COLS
 
 
 # Совместимость с сохранёнными артефактами и короткими обращениями из тетради.
@@ -94,10 +102,10 @@ def clean_bookings(df):
     out.loc[mask_x100, "adult_count"] = out.loc[mask_x100, "adult_count"] // 100
     # Опечатка в справочнике питания.
     out["meal_plan"] = out["meal_plan"].replace({"не выбрант": "не выбран"})
-    # Нулевая стоимость брони - это незаполненное поле, а не бесплатный номер:
-    # минимальная ненулевая цена 6 700 руб. Ноль переводим в пропуск, чтобы его
-    # заполнил импьютер по медиане обучающей выборки.
-    out["booking_value"] = out["booking_value"].replace({0.0: np.nan})
+    # Нулевая стоимость брони невозможна: минимальная ненулевая цена 6 700 руб.
+    # Это некорректные строки, поэтому они удаляются, а не восстанавливаются импутацией -
+    # придумывать стоимость там, где её не было, значит подменять данные.
+    out = out[out["booking_value"] > 0].reset_index(drop=True)
     for col in ("returning_customer", "parking_included"):
         out[col] = out[col].astype(int)
     out[TARGET] = (out["booking_status"] == POSITIVE_STATUS).astype(int)
@@ -199,28 +207,35 @@ def build_features(df, with_demand=False):
     return out[feature_cols(with_demand)]
 
 
-def make_preprocessor(with_demand=False, tfidf_max_features=60, tfidf_min_df=50):
-    """Препроцессор: импьютер по медиане, one-hot и TF-IDF по текстам отзывов.
+def make_preprocessor(with_demand=False):
+    """Препроцессор: импьютер по медиане и one-hot по категориям.
 
-    Все статистики (медианы, словарь категорий, словарь TF-IDF) считаются
-    внутри fit, поэтому препроцессор обучается только на обучающей части -
-    в том числе внутри каждого фолда кросс-валидации.
+    Все статистики (медианы, словарь категорий) считаются внутри fit, поэтому
+    препроцессор обучается только на обучающей части - в том числе внутри
+    каждого фолда кросс-валидации.
     """
     numeric = Pipeline([("imputer", SimpleImputer(strategy="median"))])
     categorical = OneHotEncoder(handle_unknown="ignore", sparse=False)
-    text = TfidfVectorizer(
-        max_features=tfidf_max_features,
-        min_df=tfidf_min_df,
-        lowercase=True,
-        token_pattern=r"(?u)\b[а-яёa-z]{3,}\b",
-    )
     return ColumnTransformer(
         [
             ("num", numeric, numeric_cols(with_demand)),
             ("cat", categorical, CATEGORICAL_COLS),
-            ("txt", text, TEXT_COL),
         ],
         sparse_threshold=0.0,
+    )
+
+
+def make_review_vectorizer(max_features=60, min_df=50):
+    """Векторизатор текстов отзывов для исследовательского раздела тетради.
+
+    В модель эти признаки не входят: после объединения по дате отзыв относится
+    к постороннему гостю.
+    """
+    return TfidfVectorizer(
+        max_features=max_features,
+        min_df=min_df,
+        lowercase=True,
+        token_pattern=r"(?u)\b[а-яёa-z]{3,}\b",
     )
 
 
@@ -229,11 +244,7 @@ def get_feature_names(preprocessor, with_demand=False):
     cat_names = list(
         preprocessor.named_transformers_["cat"].get_feature_names(CATEGORICAL_COLS)
     )
-    txt_names = [
-        "tfidf_" + w
-        for w in preprocessor.named_transformers_["txt"].get_feature_names()
-    ]
-    return numeric_cols(with_demand) + cat_names + txt_names
+    return numeric_cols(with_demand) + cat_names
 
 
 def collapse_onehot(shap_values, feature_names, with_demand=False):
@@ -249,14 +260,33 @@ def collapse_onehot(shap_values, feature_names, with_demand=False):
         groups[name] = [columns.index(name)]
     for cat in CATEGORICAL_COLS:
         groups[cat] = [i for i, name in enumerate(columns) if name.startswith(cat + "_")]
-    tfidf_idx = [i for i, name in enumerate(columns) if name.startswith("tfidf_")]
-    if tfidf_idx:
-        groups["review_text (TF-IDF)"] = tfidf_idx
-
     collapsed = np.column_stack(
         [shap_values[:, idx].sum(axis=1) for idx in groups.values()]
     )
     return collapsed, list(groups.keys())
+
+
+class CalibratedBookingModel:
+    """Препроцессор, базовая модель и калибратор, обученный на временных OOF-прогнозах.
+
+    Класс живёт в модуле, а не в тетради, чтобы joblib.load работал без патчей
+    ``__module__``. Интерфейс повторяет sklearn: ``predict_proba`` возвращает
+    две колонки вероятностей.
+    """
+
+    def __init__(self, preprocessor, model, calibrator, with_demand=False):
+        self.preprocessor = preprocessor
+        self.model = model
+        self.calibrator = calibrator
+        self.with_demand = with_demand
+
+    def predict_proba(self, X):
+        raw = self.model.predict_proba(self.preprocessor.transform(X))[:, 1]
+        calibrated = self.calibrator.predict(raw)
+        return np.column_stack([1 - calibrated, calibrated])
+
+    def predict(self, X, threshold=0.5):
+        return (self.predict_proba(X)[:, 1] >= threshold).astype(int)
 
 
 def confusion_counts(y_true, y_pred):
@@ -291,11 +321,13 @@ def business_metrics(y_true, y_pred, rooms_before=None, rooms_after=None):
     период до тестирования и за период тестирования. Если не заданы, знаменателем
     служит число броней выборки (одной броне соответствует один номер).
 
-    Загрузка после внедрения считается консервативно: занятыми считаем номера
-    вовремя перепроданных отмен (TP) и состоявшихся броней без вмешательства
-    модели (TN). Рядом возвращается вариант, где номера FP тоже считаются
-    занятыми: исходный гость приехал, номер не простаивает, а цена конфликта уже
-    учтена в CostFP.
+    Занятые номера до внедрения - все брони, по которым гость приехал: TN + FP.
+    После внедрения занятыми считаются только TN: по броням FP номер снят с продажи
+    и передан другому гостю, а по TP факта нового заселения в данных нет - доход от
+    возможной повторной продажи отражён отдельно, через PerRebooking в формуле IR.
+    Рядом возвращается справочный вариант, в котором перепроданные номера (TP) всё же
+    засчитываются занятыми: он показывает, каким был бы результат, если бы факт
+    повторного заселения фиксировался в данных.
     """
     y_true = np.asarray(y_true).astype(int)
     tn, fp, fn, tp = confusion_counts(y_true, y_pred)
@@ -308,9 +340,9 @@ def business_metrics(y_true, y_pred, rooms_before=None, rooms_after=None):
 
     cancel_rate_before = y_true.sum() / n
     cancel_rate_after = fn / n
-    occupancy_before = (n - y_true.sum()) / rooms_before
-    occupancy_after = (tp + tn) / rooms_after
-    occupancy_after_with_fp = (tp + tn + fp) / rooms_after
+    occupancy_before = (tn + fp) / rooms_before
+    occupancy_after = tn / rooms_after
+    occupancy_after_with_tp = (tn + tp) / rooms_after
 
     return {
         "n": n,
@@ -332,8 +364,8 @@ def business_metrics(y_true, y_pred, rooms_before=None, rooms_after=None):
         "occupancy_dynamics_%": (occupancy_before - occupancy_after)
         / occupancy_before
         * 100,
-        "occupancy_after_with_FP_%": occupancy_after_with_fp * 100,
-        "occupancy_dynamics_with_FP_%": (occupancy_before - occupancy_after_with_fp)
+        "occupancy_after_with_TP_%": occupancy_after_with_tp * 100,
+        "occupancy_dynamics_with_TP_%": (occupancy_before - occupancy_after_with_tp)
         / occupancy_before
         * 100,
     }

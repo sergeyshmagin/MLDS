@@ -1,20 +1,21 @@
 {
   "model": "CatBoost",
   "best_params": {
-    "iterations": 300,
-    "learning_rate": 0.07348369738219208,
-    "depth": 4,
-    "l2_leaf_reg": 7.548548525255816
+    "iterations": 200,
+    "learning_rate": 0.045655069437142135,
+    "depth": 7,
+    "l2_leaf_reg": 9.971776131247507
   },
-  "threshold": 0.3272,
-  "threshold_max_ir_unconstrained": 0.37,
+  "threshold": 0.395,
+  "threshold_rule": "максимум IR на калибровочной выборке",
+  "cv_threshold": 0.395,
   "with_demand_features": false,
   "random_state": 42,
-  "ir_cv": 22584833.333333332,
-  "ir_calibration": 60490000.0,
-  "ir_test": 61203000.0,
-  "ir_rel_test_%": 36.39753436633036,
-  "roc_auc_test": 0.8164368443675143,
+  "ir_cv": 22299000.0,
+  "ir_calibration": 62363000.0,
+  "ir_test": 47709500.0,
+  "ir_rel_test_%": 25.66558537621914,
+  "roc_auc_test": 0.8089567576207193,
   "numeric_cols": [
     "days_until_checkin",
     "total_nights",
@@ -30,10 +31,7 @@
     "parking_included",
     "checkin_month",
     "checkin_dayofweek",
-    "booking_month",
-    "booking_year",
-    "stay_rating",
-    "review_lag_days"
+    "booking_month"
   ],
   "categorical_cols": [
     "sales_channel",
